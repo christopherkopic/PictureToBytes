@@ -1,6 +1,7 @@
 from PIL import Image
 from pathlib import Path
 from itertools import zip_longest
+from random import randint
 import os
 
 file_txt = "Icons.h"
@@ -57,6 +58,17 @@ def encodePixels(pixels, sizeX):
             data_encoded.append(int(binary, 2))
 
     return data_encoded
+
+def convertToBinary(pixels):
+    binstring = ""
+    i = 0
+    for pixel in pixels:
+        if(pixel < randint(0,255)):
+            binstring += "0"
+        else:
+            binstring += "1"
+
+    return binstring        
 
 def main():
     #Load Textfile
