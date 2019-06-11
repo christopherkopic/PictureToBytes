@@ -3,6 +3,7 @@ from pathlib import Path
 from itertools import zip_longest
 from random import randint
 import os
+import textwrap
 
 file_txt = "Icons.h"
 
@@ -41,21 +42,16 @@ def grouper(n, iterable, padvalue=None):
     return list(zip_longest(*[iter(iterable)]*n, fillvalue=padvalue))
 
 def encodePixels(pixels, sizeX):
-    rows = grouper(sizeX, pixels, 0);
+    rows = grouper(sizeX, pixels, '0');
     data = []
     for row in rows:
-        data.append(grouper(8, row, 0))
+        data.append(grouper(8, row, '0'))
 
     data_encoded = []
     for row in data:
         for byte in row:
-            binary = ""
-            for value in byte:
-                if value > 125:
-                    binary += "1"
-                else:
-                    binary += "0"
-            data_encoded.append(int(binary, 2))
+            bytestring = "".join(byte)
+            data_encoded.append(int(bytestring, 2))
 
     return data_encoded
 
@@ -72,29 +68,31 @@ def convertToBinary(pixels):
 
 def main():
     #Load Textfile
-    #txt = open(file_txt, "w+")
-    #writeFileHead(txt, file_txt)
+    out_folder = Path("testoutput")
+    txt = open(out_folder / file_txt, "w+")
+    writeFileHead(txt, file_txt)
 
     #All bmp files as list
-    files = os.listdir("testdata")
-    files_bmp = [i for i in files if i.endswith('.bmp')]
+    pictures = os.listdir("testdata")
+    pictures_bmp = [i for i in pictures if i.endswith('.bmp')]
+    picture_folder = Path("testdata")
 
-    for bmp in files_bmp:
+    for bmp in pictures_bmp:
         #Load Image
-        img = Image.open(bmp)
+        img = Image.open(picture_folder / bmp)
+        img = img.convert('L')
         pixels = list(img.getdata())
         sizeX = img.size[0];
         sizeY = img.size[1];
         name = Path(bmp).stem
 
         binpixels = convertToBinary(pixels)
-        print(binpixels)
-        #pixels_encoded = encodePixels(pixels, sizeX)
+        bytearray = encodePixels(binpixels, sizeX)
 
-        #writeImg(txt, pixels_encoded, sizeX, sizeY, name)
+        writeImg(txt, bytearray, sizeX, sizeY, name)
 
-    #writeFileFoot(txt)
-    #txt.close()
+    writeFileFoot(txt)
+    txt.close()
 
 if __name__ == '__main__':
     main()
