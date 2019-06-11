@@ -68,15 +68,15 @@ def convertToBinary(pixels):
         else:
             binstring += "1"
 
-    return binstring        
+    return binstring
 
 def main():
     #Load Textfile
-    txt = open(file_txt, "w+")
-    writeFileHead(txt, file_txt)
+    #txt = open(file_txt, "w+")
+    #writeFileHead(txt, file_txt)
 
     #All bmp files as list
-    files = os.listdir()
+    files = os.listdir("testdata")
     files_bmp = [i for i in files if i.endswith('.bmp')]
 
     for bmp in files_bmp:
@@ -87,12 +87,14 @@ def main():
         sizeY = img.size[1];
         name = Path(bmp).stem
 
-        pixels_encoded = encodePixels(pixels, sizeX)
+        binpixels = convertToBinary(pixels)
+        print(binpixels)
+        #pixels_encoded = encodePixels(pixels, sizeX)
 
-        writeImg(txt, pixels_encoded, sizeX, sizeY, name)
+        #writeImg(txt, pixels_encoded, sizeX, sizeY, name)
 
-    writeFileFoot(txt)
-    txt.close()
+    #writeFileFoot(txt)
+    #txt.close()
 
 if __name__ == '__main__':
     main()
